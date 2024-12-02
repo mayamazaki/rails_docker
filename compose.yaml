@@ -1,0 +1,32 @@
+x-common-variables: &common-variables
+  MYSQL_ROOT_PASSWORD: password
+  MYSQL_DATABASE: app
+
+services:
+  db:
+    image: mysql:8.0
+    environment: *common-variables
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: mysql -h db -u root -p$$MYSQL_ROOT_PASSWORD -e "show databases;"
+      interval: 5s
+      retries: 6
+      start_period: 15s
+  web:
+    build: .
+    environment:
+      <<: *common-variables
+      RAILS_ENV: development
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db-data:
