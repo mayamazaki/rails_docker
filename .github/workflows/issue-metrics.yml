@@ -35,6 +35,8 @@ jobs:
         echo "$first_day..$last_day"
         echo "this_week=$first_day..$last_day" >> "$GITHUB_ENV"
 
+        echo 'repo:mayamazaki/rails_docker is:"issue pr" created:${{ env.this_week }} -reason:"not planned"'
+
     - name: Run issue-metrics tool
       uses: github/issue-metrics@v2
       env:
@@ -44,7 +46,7 @@ jobs:
     - name: Create issue
       uses: peter-evans/create-issue-from-file@v4
       with:
-        title: Monthly issue metrics report
+        title: Weekly issue metrics report
         token: ${{ secrets.GITHUB_TOKEN }}
         content-filepath: ./issue_metrics.md
         # assignees: <YOUR_GITHUB_HANDLE_HERE>
