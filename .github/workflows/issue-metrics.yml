@@ -33,7 +33,7 @@ jobs:
       uses: github/issue-metrics@v2
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SEARCH_QUERY: 'repo:mayamazaki/rails_docker is:"issue pr" created:${{ env.this_week }} -reason:"not planned"'
+        SEARCH_QUERY: 'repo:mayamazaki/rails_docker is:issue created:${{ env.this_week }} -reason:"not planned"'
 
     - name: Create issue
       uses: peter-evans/create-issue-from-file@v4
