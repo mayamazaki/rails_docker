@@ -1,4 +1,4 @@
-name: Monthly Issue Metrics
+name: Monthly issue metrics
 on:
   workflow_dispatch:
   schedule:
@@ -38,7 +38,6 @@ jobs:
     - name: Create issue
       uses: peter-evans/create-issue-from-file@v4
       with:
-        title: Weekly issue metrics report
+        title: Monthly issue metrics report
         token: ${{ secrets.GITHUB_TOKEN }}
         content-filepath: ./issue_metrics.md
-        # assignees: <YOUR_GITHUB_HANDLE_HERE>
