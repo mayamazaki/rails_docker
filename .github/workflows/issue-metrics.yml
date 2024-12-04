@@ -27,8 +27,6 @@ jobs:
         echo "$first_day..$last_day"
         echo "last_month=$first_day..$last_day" >> "$GITHUB_ENV"
 
-        echo 'repo:mayamazaki/rails_docker is:issue created:${{ env.last_month }} -reason:"not planned"'
-
     - name: Run issue-metrics tool
       uses: github/issue-metrics@v2
       env:
