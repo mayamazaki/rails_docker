@@ -1,8 +1,8 @@
-name: Weekly issue metrics
+name: Monthly Issue Metrics
 on:
   workflow_dispatch:
   schedule:
-    - cron: '30 9 3 * *'
+    - cron: '0 0 1 * *'
 
 permissions:
   issues: write
@@ -17,23 +17,23 @@ jobs:
     - name: Get dates for last month
       shell: bash
       run: |
-        # Calculate the start (Monday) of the current week
-        first_day=$(date -d "last monday" +%Y-%m-%d)
+        # Calculate the first day of the previous month
+        first_day=$(date -d "last month" +%Y-%m-01)
 
-        # Calculate the end (Sunday) of the current week
-        last_day=$(date -d "$first_day +6 days" +%Y-%m-%d)
+        # Calculate the last day of the previous month
+        last_day=$(date -d "$first_day +1 month -1 day" +%Y-%m-%d)
 
-        # Set an environment variable with the date range
+        #Set an environment variable with the date range
         echo "$first_day..$last_day"
-        echo "this_week=$first_day..$last_day" >> "$GITHUB_ENV"
+        echo "last_month=$first_day..$last_day" >> "$GITHUB_ENV"
 
-        echo 'repo:mayamazaki/rails_docker is:"issue pr" created:${{ env.this_week }} -reason:"not planned"'
+        echo 'repo:mayamazaki/rails_docker is:issue created:${{ env.last_month }} -reason:"not planned"'
 
     - name: Run issue-metrics tool
       uses: github/issue-metrics@v2
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SEARCH_QUERY: 'repo:mayamazaki/rails_docker is:"issue pr" created:${{ env.this_week }} -reason:"not planned"'
+        SEARCH_QUERY: 'repo:mayamazaki/rails_docker is:issue created:${{ env.last_month }} -reason:"not planned"'
 
     - name: Create issue
       uses: peter-evans/create-issue-from-file@v4
