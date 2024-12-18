@@ -35,9 +35,13 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SEARCH_QUERY: 'repo:mayamazaki/rails_docker is:issue created:${{ env.last_month }} -reason:"not planned"'
 
+    - name: Get last month
+      id: date
+      run: echo "::set-output name=last_month::$(date -d 'last month' +'%Y-%m')"
+
     - name: Create issue
       uses: peter-evans/create-issue-from-file@v4
       with:
-        title: Monthly issue metrics report
+        title: Monthly issue metrics report ${{ steps.date.outputs.last_month }}"
         token: ${{ secrets.GITHUB_TOKEN }}
         content-filepath: ./issue_metrics.md
