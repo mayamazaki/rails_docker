@@ -29,19 +29,21 @@ jobs:
         echo "$first_day..$last_day"
         echo "last_month=$first_day..$last_day" >> "$GITHUB_ENV"
 
+        
+
     - name: Run issue-metrics tool
       uses: github/issue-metrics@v2
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SEARCH_QUERY: 'repo:mayamazaki/rails_docker is:issue created:${{ env.last_month }} -reason:"not planned"'
 
-    - name: Get last month
-      id: date
-      run: echo "::set-output name=last_month::$(date -d 'last month' +'%Y-%m')"
+    # - name: Get last month
+    #   id: date
+    #   run: echo "::set-output name=last_month::$(date -d 'last month' +'%Y-%m')"
 
     - name: Create issue
       uses: peter-evans/create-issue-from-file@v4
       with:
-        title: Monthly issue metrics report ${{ steps.date.outputs.last_month }}"
+        title: Monthly issue metrics report ${{ env.last_month }}
         token: ${{ secrets.GITHUB_TOKEN }}
         content-filepath: ./issue_metrics.md
