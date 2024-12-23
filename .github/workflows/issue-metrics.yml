@@ -29,8 +29,6 @@ jobs:
         year_month=$(date -d "today" +%Y-%m)
 
         # Set an environment variable
-        # echo "$first_day..$last_day"
-        # echo "last_month=$first_day..$last_day" >> "$GITHUB_ENV"
         echo "first_day=$first_day" >> $GITHUB_ENV
         echo "year_month=$year_month" >> "$GITHUB_ENV"
 
@@ -38,8 +36,6 @@ jobs:
       uses: github/issue-metrics@v2
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # SEARCH_QUERY: 'repo:mayamazaki/rails_docker is:issue linked:pr created:${{ env.last_month }}'
-        # SEARCH_QUERY: 'repo:mayamazaki/rails_docker is:issue linked:pr (is:open) (closed:${{ env.last_month }})'
         SEARCH_QUERY: 'repo:mayamazaki/rails_docker is:issue linked:pr -closed:<${{ env.first_day }}'
 
     - name: Create issue
