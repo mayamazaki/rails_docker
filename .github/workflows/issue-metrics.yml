@@ -23,14 +23,14 @@ jobs:
 
         # Calculate the last day of the last month
         # last_day=$(date -d "$first_day +1 month -1 day" +%Y-%m-%d)
-        last_day=$(date -d "$(date +%Y-%m-01) +1 month -1 day" +%Y-%m-%d)
+        # last_day=$(date -d "$(date +%Y-%m-01) +1 month -1 day" +%Y-%m-%d)
 
         # Extract year and month (YYYY-MM) for the title
         year_month=$(date -d "today" +%Y-%m)
 
         # Set an environment variable
-        echo "$first_day..$last_day"
-        echo "last_month=$first_day..$last_day" >> "$GITHUB_ENV"
+        # echo "$first_day..$last_day"
+        # echo "last_month=$first_day..$last_day" >> "$GITHUB_ENV"
         echo "year_month=$year_month" >> "$GITHUB_ENV"
 
     - name: Run issue-metrics tool
@@ -38,7 +38,8 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # SEARCH_QUERY: 'repo:mayamazaki/rails_docker is:issue linked:pr created:${{ env.last_month }}'
-        SEARCH_QUERY: 'repo:mayamazaki/rails_docker is:issue linked:pr (is:open) (closed:${{ env.last_month }})'
+        # SEARCH_QUERY: 'repo:mayamazaki/rails_docker is:issue linked:pr (is:open) (closed:${{ env.last_month }})'
+        SEARCH_QUERY: 'repo:mayamazaki/rails_docker is:issue linked:pr -closed:<${{ env.first_day }}'
 
     - name: Create issue
       uses: peter-evans/create-issue-from-file@v4
