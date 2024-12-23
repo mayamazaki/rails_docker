@@ -37,7 +37,8 @@ jobs:
       uses: github/issue-metrics@v2
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SEARCH_QUERY: 'repo:mayamazaki/rails_docker is:issue linked:pr created:${{ env.last_month }}'
+        # SEARCH_QUERY: 'repo:mayamazaki/rails_docker is:issue linked:pr created:${{ env.last_month }}'
+        SEARCH_QUERY: 'repo:mayamazaki/rails_docker is:issue linked:pr (is:open) (closed:${{ env.last_month }})'
 
     - name: Create issue
       uses: peter-evans/create-issue-from-file@v4
