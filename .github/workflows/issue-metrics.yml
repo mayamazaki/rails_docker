@@ -27,25 +27,20 @@ jobs:
     - name: Show day of month
       run: echo ${{ env.CURRENT_DAY_OF_MONTH }}   # 日(1-31) が表示される
 
-    - name: Is the first day of the month
-      if: ${{ env.CURRENT_DAY_OF_MONTH == 1 }}    # 1日の場合に実行
-      run: echo "Today is the first day of the month!"
-
     - name: Is NOT the first day of the month
       if: ${{ env.CURRENT_DAY_OF_MONTH != 1 }}    # 1日ではない場合に実行
-      run: echo "Today is NOT the first day of the month."
-
-
-    - name: Get dates for last month
-      shell: bash
       run: |
-        # Calculate the first day of the last month
-        # first_day=$(date -d "last month" +%Y-%m-01)
-        first_day=$(date -d "today" +%Y-%m-01)
+        echo "Today is NOT the first day of the month. Skipping job."
+        exit 0
 
-        # Calculate the last day of the last month
-        # last_day=$(date -d "$first_day +1 month -1 day" +%Y-%m-%d)
-        # last_day=$(date -d "$(date +%Y-%m-01) +1 month -1 day" +%Y-%m-%d)
+    - name: Is the first day of the month
+      if: ${{ env.CURRENT_DAY_OF_MONTH == 1 }}    # 1日の場合に実行
+      run: |
+        echo "Today is the first day of the month"
+        echo "Fetching metrics for the last month.."
+
+        # Calculate the first day of the last month
+        first_day=$(date -d "today" +%Y-%m-01)
 
         # Extract year and month (YYYY-MM) for the title
         year_month=$(date -d "today" +%Y-%m)
@@ -55,14 +50,33 @@ jobs:
         echo "year_month=$year_month" >> $GITHUB_ENV
 
     - name: Run issue-metrics tool
+      if: ${{ env.CURRENT_DAY_OF_MONTH == 1 }}  # 1日の場合に実行
       uses: github/issue-metrics@v2
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SEARCH_QUERY: 'repo:mayamazaki/rails_docker is:issue linked:pr -closed:<${{ env.first_day }}'
 
     - name: Create issue
+      if: ${{ env.CURRENT_DAY_OF_MONTH == 1 }}  # 1日の場合に実行
       uses: peter-evans/create-issue-from-file@v4
       with:
         title: 'Monthly Issue Metrics: ${{ env.year_month }}'
         token: ${{ secrets.GITHUB_TOKEN }}
         content-filepath: ./issue_metrics.md
+
+    # - name: Get dates for last month
+    #   shell: bash
+    #   run: |
+    #     # Calculate the first day of the last month
+    #     first_day=$(date -d "today" +%Y-%m-01)
+
+    #     # Calculate the last day of the last month
+    #     # last_day=$(date -d "$first_day +1 month -1 day" +%Y-%m-%d)
+    #     # last_day=$(date -d "$(date +%Y-%m-01) +1 month -1 day" +%Y-%m-%d)
+
+    #     # Extract year and month (YYYY-MM) for the title
+    #     year_month=$(date -d "today" +%Y-%m)
+
+    #     # Set an environment variable
+    #     echo "first_day=$first_day" >> $GITHUB_ENV
+    #     echo "year_month=$year_month" >> $GITHUB_ENV
