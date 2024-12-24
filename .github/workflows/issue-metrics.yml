@@ -33,8 +33,8 @@ jobs:
         echo "Today is NOT the first day of the month. Skipping job."
         exit 0
 
-    - name: Is the first day of the month
-      if: ${{ env.current_day_of_month == 1 }}    # 1日の場合に実行
+    - name: Get dates for last month
+      if: ${{ env.current_day_of_month == 1 }}   # Run if it's the 1st day of the month
       run: |
         echo "Today is the first day of the month"
         echo "Fetching metrics for the last month.."
@@ -50,14 +50,14 @@ jobs:
         echo "year_month=$year_month" >> $GITHUB_ENV
 
     - name: Run issue-metrics tool
-      if: ${{ env.current_day_of_month == 1 }}  # 1日の場合に実行
+      if: ${{ env.current_day_of_month == 1 }}   # Run if it's the 1st day of the month
       uses: github/issue-metrics@v2
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SEARCH_QUERY: 'repo:mayamazaki/rails_docker is:issue linked:pr -closed:<${{ env.first_day }}'
 
     - name: Create issue
-      if: ${{ env.current_day_of_month == 1 }}  # 1日の場合に実行
+      if: ${{ env.current_day_of_month == 1 }}   # Run if it's the 1st day of the month
       uses: peter-evans/create-issue-from-file@v4
       with:
         title: 'Monthly Issue Metrics: ${{ env.year_month }}'
