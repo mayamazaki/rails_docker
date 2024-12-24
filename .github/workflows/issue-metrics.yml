@@ -18,23 +18,23 @@ jobs:
       env:
         TZ: 'Asia/Tokyo'
       run: |
-        echo "CURRENT_DATETIME=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
-        echo "CURRENT_DAY_OF_MONTH=$(date +'%-d')" >> $GITHUB_ENV
+        echo "current_datetime=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+        echo "current_day_of_month=$(date +'%-d')" >> $GITHUB_ENV
 
     - name: Show current date
-      run: echo ${{ env.CURRENT_DATETIME }}   # 現在日時(JST) が表示される
+      run: echo ${{ env.current_datetime }}   # 現在日時(JST) が表示される
 
     - name: Show day of month
-      run: echo ${{ env.CURRENT_DAY_OF_MONTH }}   # 日(1-31) が表示される
+      run: echo ${{ env.current_day_of_month }}   # 日(1-31) が表示される
 
     - name: Is NOT the first day of the month
-      if: ${{ env.CURRENT_DAY_OF_MONTH != 1 }}    # 1日ではない場合に実行
+      if: ${{ env.current_day_of_month != 1 }}    # 1日ではない場合に実行
       run: |
         echo "Today is NOT the first day of the month. Skipping job."
         exit 0
 
     - name: Is the first day of the month
-      if: ${{ env.CURRENT_DAY_OF_MONTH == 1 }}    # 1日の場合に実行
+      if: ${{ env.current_day_of_month == 1 }}    # 1日の場合に実行
       run: |
         echo "Today is the first day of the month"
         echo "Fetching metrics for the last month.."
@@ -50,14 +50,14 @@ jobs:
         echo "year_month=$year_month" >> $GITHUB_ENV
 
     - name: Run issue-metrics tool
-      if: ${{ env.CURRENT_DAY_OF_MONTH == 1 }}  # 1日の場合に実行
+      if: ${{ env.current_day_of_month == 1 }}  # 1日の場合に実行
       uses: github/issue-metrics@v2
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SEARCH_QUERY: 'repo:mayamazaki/rails_docker is:issue linked:pr -closed:<${{ env.first_day }}'
 
     - name: Create issue
-      if: ${{ env.CURRENT_DAY_OF_MONTH == 1 }}  # 1日の場合に実行
+      if: ${{ env.current_day_of_month == 1 }}  # 1日の場合に実行
       uses: peter-evans/create-issue-from-file@v4
       with:
         title: 'Monthly Issue Metrics: ${{ env.year_month }}'
