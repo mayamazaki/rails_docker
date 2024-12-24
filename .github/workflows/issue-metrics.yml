@@ -14,6 +14,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Set current day of month as env variable
+      env:
+        TZ: 'Asia/Tokyo'
+      run: |
+        echo "CURRENT_DATETIME=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+        echo "CURRENT_DAY_OF_MONTH=$(date +'%-d')" >> $GITHUB_ENV
+
+    - name: Show current date
+      run: echo ${{ env.CURRENT_DATETIME }}   # 現在日時(JST) が表示される
+
+    - name: Show day of month
+      run: echo ${{ env.CURRENT_DAY_OF_MONTH }}   # 日(1-31) が表示される
+
+    - name: Is the first day of the month
+      if: ${{ env.CURRENT_DAY_OF_MONTH == 1 }}    # 1日の場合に実行
+      run: echo "Today is the first day of the month!"
+
+    - name: Is NOT the first day of the month
+      if: ${{ env.CURRENT_DAY_OF_MONTH != 1 }}    # 1日ではない場合に実行
+      run: echo "Today is NOT the first day of the month."
+
+
     - name: Get dates for last month
       shell: bash
       run: |
