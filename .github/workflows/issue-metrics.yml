@@ -2,7 +2,7 @@ name: Monthly Metrics for Issues Linked to Pull Requests
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 16 28-31 * *'   # 01:00 JST on the 1st of every month
+    - cron: '0 16 28-31 * *'
 
 permissions:
   issues: write
