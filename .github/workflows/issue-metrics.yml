@@ -2,7 +2,7 @@ name: Monthly Metrics for Issues Linked to Pull Requests
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 16 28-31 * *'
+    - cron: '0 16 28-31 * *'   # 01:00 JST on the 1st of every month
 
 permissions:
   issues: write
@@ -22,13 +22,13 @@ jobs:
         echo "current_day_of_month=$(date +'%-d')" >> $GITHUB_ENV
 
     - name: Show current date
-      run: echo ${{ env.current_datetime }}   # 現在日時(JST) が表示される
+      run: echo ${{ env.current_datetime }}   # Current datetime (JST)
 
     - name: Show day of month
-      run: echo ${{ env.current_day_of_month }}   # 日(1-31) が表示される
+      run: echo ${{ env.current_day_of_month }}   # Day of the month (1-31)
 
     - name: Is NOT the first day of the month
-      if: ${{ env.current_day_of_month != 1 }}    # 1日ではない場合に実行
+      if: ${{ env.current_day_of_month != 1 }}   # Run if it's not the 1st day of the month
       run: |
         echo "Today is NOT the first day of the month. Skipping job."
         exit 0
